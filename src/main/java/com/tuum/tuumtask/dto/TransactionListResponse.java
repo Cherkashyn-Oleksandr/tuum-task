@@ -2,13 +2,25 @@ package com.tuum.tuumtask.dto;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.util.UUID;
 
-public class CreateTransactionRequest {
+public class TransactionListResponse {
 
+    private UUID transactionId;
     private BigDecimal amount;
     private String currency;
     private String direction;
     private String description;
+    private OffsetDateTime createdAt;
+
+    public UUID getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(UUID transactionId) {
+        this.transactionId = transactionId;
+    }
 
     public BigDecimal getAmount() {
         return amount;
@@ -40,5 +52,13 @@ public class CreateTransactionRequest {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public OffsetDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(OffsetDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

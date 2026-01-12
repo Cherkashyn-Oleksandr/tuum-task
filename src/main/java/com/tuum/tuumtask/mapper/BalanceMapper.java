@@ -33,7 +33,7 @@ public interface BalanceMapper {
         WHERE account_id = #{accountId, jdbcType=OTHER, typeHandler=com.tuum.tuumtask.config.UUIDTypeHandler}
           AND currency = #{currency}
     """)
-    Optional<Balance> findByAccountIdAndCurrency(
+    Balance findByAccountIdAndCurrency(
             @Param("accountId") UUID accountId,
             @Param("currency") String currency
     );

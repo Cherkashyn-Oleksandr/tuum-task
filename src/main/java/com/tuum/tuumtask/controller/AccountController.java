@@ -4,8 +4,6 @@ import com.tuum.tuumtask.dto.AccountResponse;
 import com.tuum.tuumtask.dto.CreateAccountRequest;
 import com.tuum.tuumtask.dto.CreateTransactionRequest;
 import com.tuum.tuumtask.dto.TransactionResponse;
-import com.tuum.tuumtask.model.Balance;
-import com.tuum.tuumtask.model.Transaction;
 import com.tuum.tuumtask.service.AccountService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,14 +34,4 @@ public class AccountController {
         return accountService.getAccount(accountId);
     }
 
-    @PostMapping("/{accountId}/transactions")
-    public ResponseEntity<TransactionResponse> createTransaction(
-            @PathVariable UUID accountId,
-            @RequestBody CreateTransactionRequest request
-    ) {
-        TransactionResponse response =
-                accountService.createTransaction(accountId, request);
-
-        return ResponseEntity.ok(response);
-    }
 }

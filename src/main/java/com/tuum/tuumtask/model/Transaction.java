@@ -2,6 +2,7 @@ package com.tuum.tuumtask.model;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public class Transaction {
@@ -12,7 +13,7 @@ public class Transaction {
     private String currency;
     private String direction;
     private String description;
-    private Instant createdAt;
+    private OffsetDateTime createdAt;
 
     public UUID getId() {
         return id;
@@ -62,11 +63,11 @@ public class Transaction {
         this.description = description;
     }
 
-    public Instant getCreatedAt() {
+    public OffsetDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(Instant createdAt) {
+    public void setCreatedAt(OffsetDateTime createdAt) {
         this.createdAt = createdAt;
     }
 }

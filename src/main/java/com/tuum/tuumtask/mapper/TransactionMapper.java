@@ -10,24 +10,31 @@ import java.util.UUID;
 public interface TransactionMapper {
 
     @Insert("""
-        INSERT INTO account_transaction
-        (id, account_id, amount, currency, direction, description, created_at)
-        VALUES
-        (#{id},
-         #{accountId},
-         #{amount},
-         #{currency},
-         #{direction},
-         #{description},
-         #{createdAt})
+        INSERT INTO account_transaction (
+            id, account_id, amount, currency, direction, description, created_at
+        )
+        VALUES (
+            #{id, jdbcType=OTHER, typeHandler=com.tuum.tuumtask.config.UUIDTypeHandler},
+            #{accountId, jdbcType=OTHER, typeHandler=com.tuum.tuumtask.config.UUIDTypeHandler},
+            #{amount},
+            #{currency},
+            #{direction},
+            #{description},
+            #{createdAt}
+        )
     """)
     void insert(Transaction transaction);
 
     @Select("""
         SELECT id, account_id, amount, currency, direction, description, created_at
         FROM account_transaction
-        WHERE account_id = #{accountId}
+        WHERE account_id = #{accountId, jdbcType=OTHER, typeHandler=com.tuum.tuumtask.config.UUIDTypeHandler}
         ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
     """)
-    List<Transaction> findByAccountId(UUID accountId);
+    List<Transaction> findByAccountId(
+            @Param("accountId") UUID accountId,
+            @Param("limit") int limit,
+            @Param("offset") int offset
+    );
 }
