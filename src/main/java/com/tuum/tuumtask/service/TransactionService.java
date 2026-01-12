@@ -97,7 +97,7 @@ public class TransactionService {
         transaction.setCurrency(request.getCurrency());
         transaction.setDirection(direction.name());
         transaction.setDescription(request.getDescription());
-        transaction.setCreatedAt(OffsetDateTime.now());
+        transaction.setCreatedAt(Instant.now());
 
         transactionMapper.insert(transaction);
 

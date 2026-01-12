@@ -22,5 +22,5 @@ CREATE TABLE IF NOT EXISTS account_transaction (
     currency VARCHAR(3) NOT NULL,
     direction VARCHAR(3) NOT NULL,
     description TEXT NOT NULL,
-    created_at TIMESTAMPTZ NOT NULL
+    created_at TIMESTAMP NOT NULL DEFAULT now()
     );

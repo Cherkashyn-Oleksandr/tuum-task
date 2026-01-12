@@ -12,7 +12,7 @@ public class TransactionListResponse {
     private String currency;
     private String direction;
     private String description;
-    private OffsetDateTime createdAt;
+    private Instant createdAt;
 
     public UUID getTransactionId() {
         return transactionId;
@@ -54,11 +54,11 @@ public class TransactionListResponse {
         this.description = description;
     }
 
-    public OffsetDateTime getCreatedAt() {
+    public Instant getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(OffsetDateTime createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 }

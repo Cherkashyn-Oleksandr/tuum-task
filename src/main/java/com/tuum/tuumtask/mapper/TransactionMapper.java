@@ -1,7 +1,9 @@
 package com.tuum.tuumtask.mapper;
 
+import com.tuum.tuumtask.config.UUIDTypeHandler;
 import com.tuum.tuumtask.model.Transaction;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.type.JdbcType;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,7 +22,7 @@ public interface TransactionMapper {
             #{currency},
             #{direction},
             #{description},
-            #{createdAt}
+            #{createdAt, jdbcType = TIMESTAMP}
         )
     """)
     void insert(Transaction transaction);
@@ -32,6 +34,15 @@ public interface TransactionMapper {
         ORDER BY created_at DESC
         LIMIT #{limit} OFFSET #{offset}
     """)
+    @Results({
+            @Result(property = "id", column = "id", typeHandler = UUIDTypeHandler.class),
+            @Result(property = "accountId", column = "account_id", typeHandler = UUIDTypeHandler.class),
+            @Result(property = "amount", column = "amount"),
+            @Result(property = "currency", column = "currency"),
+            @Result(property = "direction", column = "direction"),
+            @Result(property = "description", column = "description"),
+            @Result(property = "createdAt", column = "created_at", jdbcType = JdbcType.TIMESTAMP)
+    })
     List<Transaction> findByAccountId(
             @Param("accountId") UUID accountId,
             @Param("limit") int limit,
