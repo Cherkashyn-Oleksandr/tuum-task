@@ -1,18 +1,15 @@
 package com.tuum.tuumtask.service;
 
+import com.tuum.tuumtask.dto.AccountEvent;
 import com.tuum.tuumtask.dto.AccountResponse;
 import com.tuum.tuumtask.dto.CreateAccountRequest;
-import com.tuum.tuumtask.dto.CreateTransactionRequest;
-import com.tuum.tuumtask.dto.TransactionResponse;
 import com.tuum.tuumtask.exception.InvalidCurrencyException;
 import com.tuum.tuumtask.mapper.AccountMapper;
 import com.tuum.tuumtask.mapper.BalanceMapper;
 import com.tuum.tuumtask.mapper.TransactionMapper;
-import com.tuum.tuumtask.model.Direction;
 import com.tuum.tuumtask.model.Account;
 import com.tuum.tuumtask.model.Balance;
 import com.tuum.tuumtask.model.Currency;
-import com.tuum.tuumtask.model.Transaction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,21 +24,28 @@ public class AccountService {
     private final AccountMapper accountMapper;
     private final BalanceMapper balanceMapper;
     private final TransactionMapper transactionMapper;
+    private final PublisherService PublisherService;
+    private final TransactionalPublisherService TransactionalPublisherService;
 
     public AccountService(
             AccountMapper accountMapper,
             BalanceMapper balanceMapper,
-            TransactionMapper transactionMapper
+            TransactionMapper transactionMapper,
+            PublisherService publisherService,
+            TransactionalPublisherService transactionalPublisherService
+
     ) {
         this.accountMapper = accountMapper;
         this.balanceMapper = balanceMapper;
         this.transactionMapper = transactionMapper;
+        this.PublisherService = publisherService;
+        this.TransactionalPublisherService = transactionalPublisherService;
+
     }
 
     @Transactional
     public AccountResponse createAccount(CreateAccountRequest request) {
 
-        // validate currencies
         request.getCurrencies().forEach(currency -> {
             try {
                 Currency.valueOf(currency);
@@ -60,6 +64,13 @@ public class AccountService {
 
         accountMapper.insert(account);
 
+        TransactionalPublisherService.publishAfterCommit(() ->
+                PublisherService.publish(
+                        "account.created",
+                        new AccountEvent("ACCOUNT_CREATED", accountId, account)
+                )
+        );
+
         for (String currency : request.getCurrencies()) {
             Balance balance = new Balance();
             balance.setId(UUID.randomUUID());
@@ -68,6 +79,13 @@ public class AccountService {
             balance.setAmount(BigDecimal.ZERO);
 
             balanceMapper.insert(balance);
+
+            TransactionalPublisherService.publishAfterCommit(() ->
+                    PublisherService.publish(
+                            "balance.created",
+                            new AccountEvent("BALANCE_CREATED", accountId, balance)
+                    )
+            );
         }
 
         return getAccount(accountId);

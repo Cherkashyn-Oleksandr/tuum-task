@@ -2,10 +2,7 @@ package com.tuum.tuumtask.controller;
 
 import com.tuum.tuumtask.dto.AccountResponse;
 import com.tuum.tuumtask.dto.CreateAccountRequest;
-import com.tuum.tuumtask.dto.CreateTransactionRequest;
-import com.tuum.tuumtask.dto.TransactionResponse;
 import com.tuum.tuumtask.service.AccountService;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;

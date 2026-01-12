@@ -2,7 +2,6 @@ package com.tuum.tuumtask.dto;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.UUID;
 
 public class TransactionListResponse {

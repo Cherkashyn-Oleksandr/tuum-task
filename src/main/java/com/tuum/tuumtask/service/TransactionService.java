@@ -1,7 +1,6 @@
 package com.tuum.tuumtask.service;
 
-import com.tuum.tuumtask.dto.AccountResponse;
-import com.tuum.tuumtask.dto.CreateAccountRequest;
+import com.tuum.tuumtask.dto.AccountEvent;
 import com.tuum.tuumtask.dto.CreateTransactionRequest;
 import com.tuum.tuumtask.dto.TransactionResponse;
 import com.tuum.tuumtask.dto.TransactionListResponse;
@@ -9,16 +8,13 @@ import com.tuum.tuumtask.mapper.AccountMapper;
 import com.tuum.tuumtask.mapper.BalanceMapper;
 import com.tuum.tuumtask.mapper.TransactionMapper;
 import com.tuum.tuumtask.model.Direction;
-import com.tuum.tuumtask.model.Account;
 import com.tuum.tuumtask.model.Balance;
-import com.tuum.tuumtask.model.Currency;
 import com.tuum.tuumtask.model.Transaction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,15 +24,21 @@ public class TransactionService {
     private final AccountMapper accountMapper;
     private final BalanceMapper balanceMapper;
     private final TransactionMapper transactionMapper;
+    private final PublisherService PublisherService;
+    private final TransactionalPublisherService TransactionalPublisherService;
 
     public TransactionService(
             AccountMapper accountMapper,
             BalanceMapper balanceMapper,
-            TransactionMapper transactionMapper
+            TransactionMapper transactionMapper,
+            PublisherService publisherService,
+            TransactionalPublisherService transactionalpublisherService
     ) {
         this.accountMapper = accountMapper;
         this.balanceMapper = balanceMapper;
         this.transactionMapper = transactionMapper;
+        PublisherService = publisherService;
+        this.TransactionalPublisherService = transactionalpublisherService;
     }
 
 
@@ -47,17 +49,14 @@ public class TransactionService {
             CreateTransactionRequest request
     ) {
 
-        // 1️⃣ Проверка аккаунта
         if (accountMapper.findById(accountId) == null) {
             throw new RuntimeException("Account not found");
         }
 
-        // 2️⃣ Проверка amount
         if (request.getAmount() == null || request.getAmount().signum() <= 0) {
             throw new RuntimeException("Invalid amount");
         }
 
-        // 3️⃣ Direction
         Direction direction;
         try {
             direction = Direction.valueOf(request.getDirection());
@@ -65,7 +64,6 @@ public class TransactionService {
             throw new RuntimeException("Invalid direction");
         }
 
-        // 4️⃣ Баланс по валюте
         Balance balance = balanceMapper.findByAccountIdAndCurrency(
                 accountId, request.getCurrency()
         );
@@ -76,7 +74,6 @@ public class TransactionService {
 
         BigDecimal newAmount = balance.getAmount();
 
-        // 5️⃣ IN / OUT логика
         if (direction == Direction.IN) {
             newAmount = newAmount.add(request.getAmount());
         } else {
@@ -86,9 +83,15 @@ public class TransactionService {
             newAmount = newAmount.subtract(request.getAmount());
         }
 
-        // 6️⃣ Обновляем баланс
         balance.setAmount(newAmount);
         balanceMapper.update(balance);
+
+        TransactionalPublisherService.publishAfterCommit(() ->
+                PublisherService.publish(
+                        "balance.updated",
+                        new AccountEvent("BALANCE_UPDATED", accountId, balance)
+                )
+        );
 
         Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
@@ -100,6 +103,13 @@ public class TransactionService {
         transaction.setCreatedAt(Instant.now());
 
         transactionMapper.insert(transaction);
+
+        TransactionalPublisherService.publishAfterCommit(() ->
+                PublisherService.publish(
+                        "transaction.created",
+                        new AccountEvent("TRANSACTION_CREATED", accountId, transaction)
+                )
+        );
 
         TransactionResponse response = new TransactionResponse();
         response.setTransactionId(transaction.getId());
