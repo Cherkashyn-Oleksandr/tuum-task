@@ -1,0 +1,49 @@
+package com.tuum.tuumtask.controller;
+
+import com.tuum.tuumtask.dto.AccountResponse;
+import com.tuum.tuumtask.dto.CreateAccountRequest;
+import com.tuum.tuumtask.dto.CreateTransactionRequest;
+import com.tuum.tuumtask.dto.TransactionResponse;
+import com.tuum.tuumtask.model.Balance;
+import com.tuum.tuumtask.model.Transaction;
+import com.tuum.tuumtask.service.AccountService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/accounts")
+public class AccountController {
+
+    private final AccountService accountService;
+
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
+    @PostMapping
+    public AccountResponse createAccount(
+            @RequestBody CreateAccountRequest request
+    ) {
+        return accountService.createAccount(request);
+    }
+
+    @GetMapping("/{accountId}")
+    public AccountResponse getAccount(
+            @PathVariable UUID accountId
+    ) {
+        return accountService.getAccount(accountId);
+    }
+
+    @PostMapping("/{accountId}/transactions")
+    public ResponseEntity<TransactionResponse> createTransaction(
+            @PathVariable UUID accountId,
+            @RequestBody CreateTransactionRequest request
+    ) {
+        TransactionResponse response =
+                accountService.createTransaction(accountId, request);
+
+        return ResponseEntity.ok(response);
+    }
+}
