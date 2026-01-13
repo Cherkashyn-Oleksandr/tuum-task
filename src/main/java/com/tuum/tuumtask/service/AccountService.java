@@ -3,7 +3,8 @@ package com.tuum.tuumtask.service;
 import com.tuum.tuumtask.dto.AccountEvent;
 import com.tuum.tuumtask.dto.AccountResponse;
 import com.tuum.tuumtask.dto.CreateAccountRequest;
-import com.tuum.tuumtask.exception.InvalidCurrencyException;
+import com.tuum.tuumtask.exception.BusinessException;
+import com.tuum.tuumtask.exception.ErrorCode;
 import com.tuum.tuumtask.mapper.AccountMapper;
 import com.tuum.tuumtask.mapper.BalanceMapper;
 import com.tuum.tuumtask.mapper.TransactionMapper;
@@ -50,7 +51,7 @@ public class AccountService {
             try {
                 Currency.valueOf(currency);
             } catch (IllegalArgumentException e) {
-                throw new InvalidCurrencyException("Invalid currency: " + currency);
+                throw new BusinessException(ErrorCode.INVALID_CURRENCY);
             }
         });
 
@@ -95,7 +96,7 @@ public class AccountService {
 
         Account account = accountMapper.findById(accountId);
         if (account == null) {
-            throw new RuntimeException("Account not found");
+            throw new BusinessException(ErrorCode.ACCOUNT_NOT_FOUND);
         }
 
         List<Balance> balances = balanceMapper.findByAccountId(accountId);

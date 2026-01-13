@@ -1,7 +1,6 @@
 package com.tuum.tuumtask.mapper;
 
 import com.tuum.tuumtask.model.Balance;
-import com.tuum.tuumtask.config.UUIDTypeHandler;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

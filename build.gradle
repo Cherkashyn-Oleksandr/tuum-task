@@ -27,13 +27,15 @@ dependencies {
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
 
     // Database
-    implementation 'org.postgresql:postgresql'
+    implementation 'org.postgresql:postgresql:42.6.0'
 
     // Tests
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.testcontainers:junit-jupiter'
-    testImplementation 'org.testcontainers:postgresql'
-    testImplementation 'org.testcontainers:rabbitmq'
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers:3.2.1'
+
+    testImplementation 'org.testcontainers:junit-jupiter:1.20.3'
+    testImplementation 'org.testcontainers:postgresql:1.20.3'
+    testImplementation 'org.testcontainers:rabbitmq:1.20.3'
 }
 
 test {

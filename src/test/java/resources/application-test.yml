@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:15:///testdb
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+
+  rabbitmq:
+    listener:
+      simple:
+        auto-startup: false

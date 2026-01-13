@@ -4,9 +4,12 @@ import com.tuum.tuumtask.dto.AccountEvent;
 import com.tuum.tuumtask.dto.CreateTransactionRequest;
 import com.tuum.tuumtask.dto.TransactionResponse;
 import com.tuum.tuumtask.dto.TransactionListResponse;
+import com.tuum.tuumtask.exception.BusinessException;
+import com.tuum.tuumtask.exception.ErrorCode;
 import com.tuum.tuumtask.mapper.AccountMapper;
 import com.tuum.tuumtask.mapper.BalanceMapper;
 import com.tuum.tuumtask.mapper.TransactionMapper;
+import com.tuum.tuumtask.model.Currency;
 import com.tuum.tuumtask.model.Direction;
 import com.tuum.tuumtask.model.Balance;
 import com.tuum.tuumtask.model.Transaction;
@@ -50,26 +53,37 @@ public class TransactionService {
     ) {
 
         if (accountMapper.findById(accountId) == null) {
-            throw new RuntimeException("Account not found");
+            throw new BusinessException(ErrorCode.INVALID_CURRENCY);
+        }
+
+        if (request.getDescription() == null || request.getDescription().isBlank()) {
+            throw new BusinessException(ErrorCode.DESCRIPTION_MISSING);
         }
 
         if (request.getAmount() == null || request.getAmount().signum() <= 0) {
-            throw new RuntimeException("Invalid amount");
+            throw new BusinessException(ErrorCode.INVALID_AMOUNT);
         }
 
         Direction direction;
         try {
             direction = Direction.valueOf(request.getDirection());
         } catch (Exception e) {
-            throw new RuntimeException("Invalid direction");
+            throw new BusinessException(ErrorCode.INVALID_DIRECTION);
+        }
+
+        Currency currency;
+        try {
+            currency = Currency.valueOf(request.getCurrency());
+        } catch (Exception e) {
+            throw new BusinessException(ErrorCode.INVALID_CURRENCY);
         }
 
         Balance balance = balanceMapper.findByAccountIdAndCurrency(
-                accountId, request.getCurrency()
+                accountId, currency.name()
         );
 
         if (balance == null) {
-            throw new RuntimeException("Invalid currency");
+            throw new BusinessException(ErrorCode.INVALID_CURRENCY);
         }
 
         BigDecimal newAmount = balance.getAmount();
@@ -78,7 +92,7 @@ public class TransactionService {
             newAmount = newAmount.add(request.getAmount());
         } else {
             if (newAmount.compareTo(request.getAmount()) < 0) {
-                throw new RuntimeException("Insufficient funds");
+                throw new BusinessException(ErrorCode.INSUFFICIENT_FUNDS);
             }
             newAmount = newAmount.subtract(request.getAmount());
         }
