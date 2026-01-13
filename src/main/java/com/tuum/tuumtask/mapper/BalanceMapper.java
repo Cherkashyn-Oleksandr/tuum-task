@@ -16,6 +16,7 @@ public interface BalanceMapper {
                 #{currency},
                 #{amount})
     """)
+    //insert new balance to db
     void insert(Balance balance);
 
     @Select("""
@@ -23,6 +24,7 @@ public interface BalanceMapper {
         FROM balance
         WHERE account_id = #{accountId, jdbcType=OTHER, typeHandler=com.tuum.tuumtask.config.UUIDTypeHandler}
     """)
+    //find balance from db
     List<Balance> findByAccountId(UUID accountId);
 
     @Select("""
@@ -41,5 +43,6 @@ public interface BalanceMapper {
         SET amount = #{amount}
         WHERE id = #{id, jdbcType=OTHER, typeHandler=com.tuum.tuumtask.config.UUIDTypeHandler}
     """)
+    //update balance after completed transactions
     void update(Balance balance);
 }

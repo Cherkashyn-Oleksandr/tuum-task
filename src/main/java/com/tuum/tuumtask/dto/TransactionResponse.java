@@ -3,6 +3,7 @@ package com.tuum.tuumtask.dto;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+//data from APi after completed transaction
 public class TransactionResponse {
 
     private UUID transactionId;
@@ -12,6 +13,8 @@ public class TransactionResponse {
     private String direction;
     private BigDecimal balanceAfter;
 
+
+    //getters setters
     public UUID getAccountId() {
         return accountId;
     }

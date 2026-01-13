@@ -3,12 +3,15 @@ package com.tuum.tuumtask.dto;
 import java.util.List;
 import java.util.UUID;
 
+//data for creation account
 public class CreateAccountRequest {
 
     private UUID customerId;
     private String country;
     private List<String> currencies;
 
+
+    //getters setters
     public UUID getCustomerId() {
         return customerId;
     }

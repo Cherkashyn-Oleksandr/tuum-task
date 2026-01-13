@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+//data from APi after request transactions for account
 public class TransactionListResponse {
 
     private UUID transactionId;
@@ -13,11 +14,15 @@ public class TransactionListResponse {
     private String description;
     private Instant createdAt;
 
+
+    //getters setters
     public UUID getTransactionId() {
+
         return transactionId;
     }
 
     public void setTransactionId(UUID transactionId) {
+
         this.transactionId = transactionId;
     }
 

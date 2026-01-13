@@ -18,6 +18,7 @@ public class AccountController {
     }
 
     @PostMapping
+    //Create new Account
     public AccountResponse createAccount(
             @RequestBody CreateAccountRequest request
     ) {
@@ -25,6 +26,7 @@ public class AccountController {
     }
 
     @GetMapping("/{accountId}")
+    //Get account data by ID
     public AccountResponse getAccount(
             @PathVariable UUID accountId
     ) {

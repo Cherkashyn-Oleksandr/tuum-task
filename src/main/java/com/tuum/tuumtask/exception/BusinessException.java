@@ -1,5 +1,6 @@
 package com.tuum.tuumtask.exception;
 
+//exception for business logic errors
 public class BusinessException extends RuntimeException {
 
     private final ErrorCode errorCode;

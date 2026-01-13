@@ -5,6 +5,7 @@ import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Component
+//Starts actions after completed transactions
 public class TransactionalPublisherService {
 
     private final PublisherService publisher;

@@ -25,6 +25,7 @@ public interface TransactionMapper {
             #{createdAt, jdbcType = TIMESTAMP}
         )
     """)
+    //insert new completed transaction to db
     void insert(Transaction transaction);
 
     @Select("""
@@ -43,6 +44,7 @@ public interface TransactionMapper {
             @Result(property = "description", column = "description"),
             @Result(property = "createdAt", column = "created_at", jdbcType = JdbcType.TIMESTAMP)
     })
+    //find transactions for account
     List<Transaction> findByAccountId(
             @Param("accountId") UUID accountId,
             @Param("limit") int limit,

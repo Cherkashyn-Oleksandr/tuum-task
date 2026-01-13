@@ -10,5 +10,6 @@ import org.testcontainers.utility.TestcontainersConfiguration;
 @Import(TestcontainersConfiguration.class)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+//Base class for tests
 public abstract class BaseIntegrationTest {
 }

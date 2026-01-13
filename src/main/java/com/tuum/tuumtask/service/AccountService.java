@@ -45,8 +45,10 @@ public class AccountService {
     }
 
     @Transactional
+    //create new account with balances and publish events
     public AccountResponse createAccount(CreateAccountRequest request) {
 
+        //Validation
         request.getCurrencies().forEach(currency -> {
             try {
                 Currency.valueOf(currency);
@@ -57,14 +59,17 @@ public class AccountService {
 
         UUID accountId = UUID.randomUUID();
 
+        //Create account object
         Account account = new Account();
         account.setId(accountId);
         account.setCustomerId(request.getCustomerId());
         account.setCountry(request.getCountry());
         account.setCreatedAt(Instant.now());
 
+        //Insert in db
         accountMapper.insert(account);
 
+        //get event after creating
         TransactionalPublisherService.publishAfterCommit(() ->
                 PublisherService.publish(
                         "account.created",
@@ -72,6 +77,7 @@ public class AccountService {
                 )
         );
 
+        //new balance for each currency
         for (String currency : request.getCurrencies()) {
             Balance balance = new Balance();
             balance.setId(UUID.randomUUID());
@@ -79,8 +85,10 @@ public class AccountService {
             balance.setCurrency(currency);
             balance.setAmount(BigDecimal.ZERO);
 
+            //insert balances
             balanceMapper.insert(balance);
 
+            //get event after creating all balances
             TransactionalPublisherService.publishAfterCommit(() ->
                     PublisherService.publish(
                             "balance.created",
@@ -92,6 +100,7 @@ public class AccountService {
         return getAccount(accountId);
     }
 
+    //get account with all balances
     public AccountResponse getAccount(UUID accountId) {
 
         Account account = accountMapper.findById(accountId);

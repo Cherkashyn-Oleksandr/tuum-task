@@ -20,6 +20,7 @@ public class TransactionController {
     }
 
     @PostMapping
+    //Create new transaction
     public TransactionResponse createTransaction(
             @PathVariable UUID accountId,
             @RequestBody CreateTransactionRequest request
@@ -28,6 +29,7 @@ public class TransactionController {
     }
 
     @GetMapping
+    //Get transactions from AccountID
     public List<TransactionListResponse> getTransactions(
             @PathVariable UUID accountId,
             @RequestParam(defaultValue = "50") int limit,

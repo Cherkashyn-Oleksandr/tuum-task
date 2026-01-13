@@ -2,6 +2,7 @@ package com.tuum.tuumtask.dto;
 
 import java.math.BigDecimal;
 
+//data for creation transaction
 public class CreateTransactionRequest {
 
     private BigDecimal amount;
@@ -9,6 +10,8 @@ public class CreateTransactionRequest {
     private String direction;
     private String description;
 
+
+    //getters setters
     public BigDecimal getAmount() {
         return amount;
     }

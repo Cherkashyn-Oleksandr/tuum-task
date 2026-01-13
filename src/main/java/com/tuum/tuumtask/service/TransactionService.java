@@ -47,11 +47,13 @@ public class TransactionService {
 
 
     @Transactional
+    //Create a transaction and update the account balance
     public TransactionResponse createTransaction(
             UUID accountId,
             CreateTransactionRequest request
     ) {
 
+        //Validations
         if (accountMapper.findById(accountId) == null) {
             throw new BusinessException(ErrorCode.INVALID_CURRENCY);
         }
@@ -78,6 +80,7 @@ public class TransactionService {
             throw new BusinessException(ErrorCode.INVALID_CURRENCY);
         }
 
+        //Get current balances
         Balance balance = balanceMapper.findByAccountIdAndCurrency(
                 accountId, currency.name()
         );
@@ -88,6 +91,7 @@ public class TransactionService {
 
         BigDecimal newAmount = balance.getAmount();
 
+        //Update balance
         if (direction == Direction.IN) {
             newAmount = newAmount.add(request.getAmount());
         } else {
@@ -100,6 +104,7 @@ public class TransactionService {
         balance.setAmount(newAmount);
         balanceMapper.update(balance);
 
+        //Start event
         TransactionalPublisherService.publishAfterCommit(() ->
                 PublisherService.publish(
                         "balance.updated",
@@ -118,6 +123,7 @@ public class TransactionService {
 
         transactionMapper.insert(transaction);
 
+        //start event
         TransactionalPublisherService.publishAfterCommit(() ->
                 PublisherService.publish(
                         "transaction.created",
@@ -135,6 +141,8 @@ public class TransactionService {
 
         return response;
     }
+
+    //get list of transactions for account
     public List<TransactionListResponse> getTransactions(
             UUID accountId,
             int limit,

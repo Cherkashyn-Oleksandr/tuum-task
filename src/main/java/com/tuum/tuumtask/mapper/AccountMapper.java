@@ -17,6 +17,7 @@ public interface AccountMapper {
                 #{country},
                 #{createdAt})
     """)
+    //insert new account to db
     void insert(Account account);
 
     @Select("""
@@ -30,5 +31,6 @@ public interface AccountMapper {
             @Result(property = "country", column = "country"),
             @Result(property = "createdAt", column = "created_at")
     })
+    //find existing account
     Account findById(UUID id);
 }

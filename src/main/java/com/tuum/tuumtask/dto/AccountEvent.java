@@ -12,6 +12,7 @@ public class AccountEvent {
 
     public AccountEvent() {}
 
+    //Constructor sets type, accountId, payload, and current time
     public AccountEvent(String type, UUID accountId, Object payload) {
         this.type = type;
         this.accountId = accountId;
@@ -19,6 +20,7 @@ public class AccountEvent {
         this.occurredAt = Instant.now();
     }
 
+    //getters
     public String getType() {
         return type;
     }

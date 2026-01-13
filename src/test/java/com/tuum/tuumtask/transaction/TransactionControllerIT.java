@@ -27,6 +27,7 @@ public class TransactionControllerIT extends BaseIntegrationTest{
     void contextLoads() {
     }
 
+    //create account for tests
     private UUID createAccount() throws Exception {
         CreateAccountRequest request = new CreateAccountRequest();
         request.setCustomerId(UUID.randomUUID());
@@ -47,6 +48,7 @@ public class TransactionControllerIT extends BaseIntegrationTest{
 
 
     @Test
+    //Test successful transaction creation
     void createTransaction_success() throws Exception {
         UUID accountId = createAccount();
 
@@ -64,6 +66,7 @@ public class TransactionControllerIT extends BaseIntegrationTest{
     }
 
     @Test
+    //Test transaction with missing description
     void createTransaction_descriptionMissing() throws Exception {
         UUID accountId = createAccount();
 
@@ -80,6 +83,7 @@ public class TransactionControllerIT extends BaseIntegrationTest{
     }
 
     @Test
+    //Test transaction with insufficient funds
     void createTransaction_insufficientFunds() throws Exception {
         UUID accountId = createAccount();
 

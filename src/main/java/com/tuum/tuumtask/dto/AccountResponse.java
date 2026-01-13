@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+//Data for deetails returned from API
 public class AccountResponse {
 
     private UUID accountId;
@@ -14,6 +15,7 @@ public class AccountResponse {
         private String currency;
         private BigDecimal availableAmount;
 
+        //getters setters
         public String getCurrency() {
             return currency;
         }

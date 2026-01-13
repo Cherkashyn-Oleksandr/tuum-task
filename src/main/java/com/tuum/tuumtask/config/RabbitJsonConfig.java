@@ -11,11 +11,13 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitJsonConfig {
 
     @Bean
+    // Convert messages to/from JSON using Jackson
     public Jackson2JsonMessageConverter jacksonConverter(ObjectMapper objectMapper) {
         return new Jackson2JsonMessageConverter(objectMapper);
     }
 
     @Bean
+    // Configure RabbitTemplate with JSON converter
     public RabbitTemplate rabbitTemplate(
             ConnectionFactory connectionFactory,
             Jackson2JsonMessageConverter converter

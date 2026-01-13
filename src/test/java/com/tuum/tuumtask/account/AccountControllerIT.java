@@ -22,6 +22,7 @@ class AccountControllerIT extends BaseIntegrationTest {
     ObjectMapper objectMapper;
 
     @Test
+    //Test successful account creation
     void createAccount_success() throws Exception {
         CreateAccountRequest request = new CreateAccountRequest();
         request.setCustomerId(UUID.randomUUID());
@@ -38,6 +39,7 @@ class AccountControllerIT extends BaseIntegrationTest {
     }
 
     @Test
+    //Test account creation with invalid currency
     void createAccount_invalidCurrency() throws Exception {
         CreateAccountRequest request = new CreateAccountRequest();
         request.setCustomerId(UUID.randomUUID());
@@ -52,6 +54,7 @@ class AccountControllerIT extends BaseIntegrationTest {
     }
 
     @Test
+    //Test getting an account that does not exist
     void getAccount_notFound() throws Exception {
         mockMvc.perform(get("/accounts/{id}", UUID.randomUUID()))
                 .andExpect(status().isNotFound())

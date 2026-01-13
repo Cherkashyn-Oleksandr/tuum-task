@@ -2,6 +2,7 @@ package com.tuum.tuumtask.exception;
 
 import org.springframework.http.HttpStatus;
 
+//enum for error codes
 public enum ErrorCode {
 
     ACCOUNT_NOT_FOUND(HttpStatus.NOT_FOUND, "Account not found"),
@@ -15,15 +16,18 @@ public enum ErrorCode {
     private final HttpStatus status;
     private final String message;
 
+    //construct
     ErrorCode(HttpStatus status, String message) {
         this.status = status;
         this.message = message;
     }
 
+    //http status
     public HttpStatus getStatus() {
         return status;
     }
 
+    //error message
     public String getMessage() {
         return message;
     }

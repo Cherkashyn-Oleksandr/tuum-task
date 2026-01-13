@@ -6,6 +6,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
+//Publish events to RabbitMQ
 public class PublisherService {
 
     private final RabbitTemplate rabbitTemplate;

@@ -8,12 +8,14 @@ public class ErrorResponse {
     private final Instant timestamp;
     private final String error;
 
+    //constructor
     public ErrorResponse(String message, Instant timestamp, String error) {
         this.message = message;
         this.timestamp = timestamp;
         this.error = error;
     }
 
+    //getters
     public String getMessage() {
         return message;
     }
