@@ -10,10 +10,40 @@ services:
       POSTGRES_PASSWORD: banking
     ports:
       - "5432:5432"
-
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U banking" ]
+      interval: 5s
+      retries: 5
   rabbitmq:
     image: rabbitmq:3-management
     container_name: tuum-rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: tuum
+      RABBITMQ_DEFAULT_PASS: tuum
     ports:
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      interval: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: tuum-app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/banking
+      SPRING_DATASOURCE_USERNAME: banking
+      SPRING_DATASOURCE_PASSWORD: banking
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: tuum
+      SPRING_RABBITMQ_PASSWORD: tuum
+      SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8080:8080"
